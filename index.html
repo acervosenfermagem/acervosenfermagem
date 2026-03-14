@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acervos da História da Enfermagem</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --berry: #6D2E46;
+    --berry-light: #8B3A5C;
+    --accent: #C9556E;
+    --accent2: #E8839A;
+    --cream: #FAF5F0;
+    --off-white: #F5EDE6;
+    --dark: #2C1A23;
+    --gray: #6B5B62;
+    --light-gray: #E8DDD5;
+    --white: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--berry);
+    padding: 60px 24px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(201,85,110,0.15);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .hero-inner { max-width: 720px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero-label {
+    display: inline-block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    background: rgba(201,85,110,0.2);
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { color: var(--accent2); font-style: italic; }
+  .hero p {
+    font-size: 15px;
+    color: rgba(250,245,240,0.7);
+    line-height: 1.7;
+    max-width: 560px;
+  }
+
+  /* STATS BAR */
+  .stats {
+    background: var(--dark);
+    padding: 18px 24px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .stat {
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    padding: 4px 16px;
+  }
+  .stat:last-child { border-right: none; }
+  .stat-n {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent2);
+    display: block;
+  }
+  .stat-l {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* FILTER NAV */
+  .filter-wrap {
+    padding: 24px 24px 8px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .filter-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 10px;
+  }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .filter-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--light-gray);
+    background: transparent;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--berry); border-color: var(--berry); color: white; }
+
+  /* ACERVOS LIST */
+  .list-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px 24px 80px;
+  }
+
+  .acervo-item {
+    background: var(--white);
+    border: 1.5px solid var(--light-gray);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .acervo-item.hidden { display: none; }
+  .acervo-item:hover { border-color: var(--accent2); box-shadow: 0 4px 20px rgba(109,46,70,0.08); }
+  .acervo-item.open { border-color: var(--berry); }
+
+  .acervo-header {
+    padding: 18px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .acervo-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    background: var(--off-white);
+  }
+  .acervo-meta { flex: 1; }
+  .acervo-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+  .tag {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+  }
+  .tag-museu    { background:#F0E8F4; color:#6D2E46; }
+  .tag-cedoc    { background:#E1F5EE; color:#0F6E56; }
+  .tag-assoc    { background:#EDF0FE; color:#3B4BAF; }
+  .tag-arquivo  { background:#FFF3E0; color:#8B5000; }
+  .tag-periodico{ background:#E8F5E9; color:#2E7D32; }
+  .tag-digital  { background:#FCE4EC; color:#880E4F; }
+  .tag-ano {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--off-white);
+    color: var(--gray);
+    letter-spacing: 0.04em;
+  }
+  .acervo-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark);
+    line-height: 1.3;
+    margin-bottom: 3px;
+  }
+  .acervo-local {
+    font-size: 12px;
+    color: var(--gray);
+  }
+  .acervo-toggle {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--off-white);
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: background 0.2s, transform 0.25s;
+    font-size: 14px;
+    color: var(--gray);
+  }
+  .acervo-item.open .acervo-toggle { background: var(--berry); color: white; transform: rotate(180deg); }
+
+  .acervo-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1.5px solid var(--off-white);
+  }
+  .acervo-item.open .acervo-body { display: block; }
+
+  .body-section { margin-top: 16px; }
+  .body-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .body-text {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.7;
+  }
+
+  .bens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 8px;
+  }
+  .bem {
+    background: var(--off-white);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .bem-emoji { font-size: 16px; flex-shrink: 0; line-height: 1; margin-top: 1px; }
+  .bem-info {}
+  .bem-name { font-size: 12px; font-weight: 500; color: var(--dark); line-height: 1.3; }
+  .bem-detail { font-size: 11px; color: var(--gray); margin-top: 2px; line-height: 1.4; }
+
+  .acesso-box {
+    margin-top: 14px;
+    background: linear-gradient(135deg, var(--berry) 0%, var(--berry-light) 100%);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .acesso-icon { font-size: 16px; flex-shrink: 0; }
+  .acesso-text { font-size: 12px; color: rgba(250,245,240,0.9); line-height: 1.6; }
+  .acesso-text strong { color: white; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--dark);
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .footer p { font-size: 12px; color: rgba(255,255,255,0.35); line-height: 1.8; }
+  .footer strong { color: rgba(255,255,255,0.6); }
+
+  /* SCROLL TOP */
+  .scroll-top {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--berry);
+    color: white;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(109,46,70,0.35);
+    z-index: 100;
+    transition: background 0.2s;
+  }
+  .scroll-top:hover { background: var(--accent); }
+  .scroll-top.visible { display: flex; }
+
+  @media (max-width: 480px) {
+    .hero { padding: 40px 18px 36px; }
+    .list-wrap, .filter-wrap { padding-left: 16px; padding-right: 16px; }
+    .stat { padding: 4px 10px; }
+    .stat-n { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <span class="hero-label">Seminário Acadêmico · Enfermagem</span>
+    <h1>Acervos da<br><em>História da Enfermagem</em></h1>
+    <p>Conheça os principais acervos, museus e repositórios que preservam a memória da enfermagem brasileira — quando surgiram, o que são e quais bens e peças guardam.</p>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><span class="stat-n">9</span><span class="stat-l">Acervos</span></div>
+  <div class="stat"><span class="stat-n">1838</span><span class="stat-l">Mais antigo</span></div>
+  <div class="stat"><span class="stat-n">90+</span><span class="stat-l">Anos de REBEn</span></div>
+  <div class="stat"><span class="stat-n">3.4k+</span><span class="stat-l">Fotos EEAN</span></div>
+</div>
+
+<div class="filter-wrap">
+  <p class="filter-label">Filtrar por tipo</p>
+  <div class="filters">
+    <button class="filter-btn active" onclick="filter('todos', this)">Todos</button>
+    <button class="filter-btn" onclick="filter('museu', this)">Museus</button>
+    <button class="filter-btn" onclick="filter('cedoc', this)">Centros de Doc.</button>
+    <button class="filter-btn" onclick="filter('assoc', this)">Assoc. e Conselhos</button>
+    <button class="filter-btn" onclick="filter('arquivo', this)">Arquivos históricos</button>
+    <button class="filter-btn" onclick="filter('periodico', this)">Periódicos</button>
+    <button class="filter-btn" onclick="filter('digital', this)">Digitais</button>
+  </div>
+</div>
+
+<div class="list-wrap" id="list">
+
+  <!-- 1. MuNEAN -->
+  <div class="acervo-item" data-cat="museu">
+    <div class="acervo-header" onclick="toggle(this.parentElement)">
+      <div class="acervo-icon">🏛</div>
+      <div class="acervo-meta">
+        <div class="acervo-tags">
+          <span class="tag tag-museu">Museu</span>
+          <span class="tag tag-ano">Fundado em 2010</span>
+        </div>
+        <div class="acervo-name">MuNEAN — Museu Nacional de Enfermagem Anna Nery</div>
+        <div class="acervo-local">📍 Pelourinho, Salvador (BA) · mantido pelo COFEN</div>
+      </div>
+      <button class="acervo-toggle">▾</button>
+    </div>
+    <div class="acervo-body">
+      <div class="body-section">
+        <div class="body-label">O que é</div>
+        <div class="body-text">Primeiro museu do país dedicado exclusivamente à história da enfermagem. Inaugurado em <strong>20 de maio de 2010</strong>, data que marcou os 130 anos do falecimento de Anna Nery. Instalado em casarão tombado do século XIX (cadastro de 1893) no Centro Histórico de Salvador. Gerido pelo COFEN, integra o Circuito Cultural da Saúde. Em 2024 recebeu <strong>18.161 visitantes</strong>.</div>
+      </div>
+      <div class="body-section">
+        <div class="body-label">Bens e peças do acervo</div>
+        <div class="bens-grid">
+          <div class="bem"><span class="bem-emoji">🏺</span><div class="bem-info"><div class="bem-name">Relíquias de Anna Nery</div><div class="bem-detail">Objetos pessoais da patrona da enfermagem brasileira</div></div></div>
+          <div class="bem"><span class="bem-emoji">👗</span><div class="bem-info"><div class="bem-name">Uniformes históricos originais</div><div class="bem-detail">Expo. itinerante "Indumentárias do Cuidar"</div></div></div>
+          <div class="bem"><span class="bem-emoji">📷</span><div class="bem-info"><div class="bem-name">Fotografias históricas</div><div class="bem-detail">Profissionais e práticas assistenciais</div></div></div>
+          <div class="bem"><span class="bem-emoji">📜</span><div class="bem-info"><div class="bem-name">Manuscritos e documentos</div><div class="bem-detail">Registros originais da profissão</div></div></div>
+          <div class="bem"><span class="bem-emoji">🖼</span><div class="bem-info"><div class="bem-name">Quadros e pinturas</div><div class="bem-detail">Retratos de figuras históricas</div></div></div>
+          <div class="bem"><span class="bem-emoji">🥇</span><div class="bem-info"><div class="bem-name">Medalhas e insígnias</div><div class="bem-detail">Honrarias e condecorações profissionais</div></div></div>
+          <div class="bem"><span class="bem-emoji">🎖</span><div class="bem-info"><div class="bem-name">Acervo Jandira Meirelles</div><div class="bem-detail">Enfermeira-socorrista na 2ª Guerra Mundial</div></div></div>
+          <div class="bem"><span class="bem-emoji">🏛</span><div class="bem-info"><div class="bem-name">Espaço Cofen permanente</div><div class="bem-detail">Trajetória do sistema Cofen/CORENs</div></div></div>
+        </div>
+      </div>
+      <div class="acesso-box">
+        <span class="acesso-icon">🕐</span>
+        <div class="acesso-text"><strong>Horário:</strong> Ter–Sex 9h–17h · Seg 12h–17h · Sáb 10h–13h<br><strong>Entrada gratuita</strong> · Agendamento: muneanagendamento@cofen.gov.br</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CEDOC EEAN -->
+  <div class="acervo-item" data-cat="cedoc">
+    <div class="acervo-header" onclick="toggle(this.parentElement)">
+      <div class="acervo-icon">🗂</div>
+      <div class="acervo-meta">
+        <div class="acervo-tags">
+          <span class="tag tag-cedoc">Centro de Doc.</span>
+          <span class="tag tag-ano">CEDOC 1993 · Museu 2017</span>
+        </div>
+        <div class="acervo-name">CEDOC/Museu da EEAN — Escola de Enfermagem Anna Nery / UFRJ</div>
+        <div class="acervo-local">📍 Cidade Nova, Rio de Janeiro (RJ) · prédio tombado IPHAN</div>
+      </div>
+      <button class="acervo-toggle">▾</button>
+    </div>
+    <div class="acervo-body">
+      <div class="body-section">
+        <div class="body-label">O que é</div>
+        <div class="body-text">O <strong>CEDOC</strong> foi inaugurado em 8 de dezembro de 1993, nos 70 anos da EEAN, vinculado ao NUPHEBRAS. O <strong>Museu Elvira de Felice Souza</strong> foi inaugurado em 22 de maio de 2017. Integra a Rede de Museus da UFRJ. Desde 2020 realiza visitas online para estados como Ceará, Maranhão, Santa Catarina, Amapá e Pará.</div>
+      </div>
+      <div class="body-section">
+        <div class="body-label">Bens e peças do acervo</div>
+        <div class="bens-grid">
+          <div class="bem"><span class="bem-emoji">📄</span><div class="bem-info"><div class="bem-name">Documentos textuais</div><div class="bem-detail">135 metros lineares desde 1922</div></div></div>
+          <div class="bem"><span class="bem-emoji">📷</span><div class="bem-info"><div class="bem-name">Fotografias históricas</div><div class="bem-detail">3.426 fotografias catalogadas</div></div></div>
+          <div class="bem"><span class="bem-emoji">🎙</span><div class="bem-info"><div class="bem-name">Entrevistas de história oral</div><div class="bem-detail">289 entrevistas de profissionais</div></div></div>
+          <div class="bem"><span class="bem-emoji">📼</span><div class="bem-info"><div class="bem-name">Fitas VHS</div><div class="bem-detail">26 fitas de registros audiovisuais</div></div></div>
+          <div class="bem"><span class="bem-emoji">💿</span><div class="bem-info"><div class="bem-name">DVDs documentais</div><div class="bem-detail">6 DVDs do acervo institucional</div></div></div>
+          <div class="bem"><span class="bem-emoji">📚</span><div class="bem-info"><div class="bem-name">Livros e obras raras</div><div class="bem-detail">398 títulos de obras raras e anais</div></div></div>
+          <div class="bem"><span class="bem-emoji">🪑</span><div class="bem-info"><div class="bem-name">Mobiliário histórico</div><div class="bem-detail">Peças do antigo internato da EEAN</div></div></div>
+          <div class="bem"><span class="bem-emoji">🔬</span><div class="bem-info"><div class="bem-name">Instrumentos de cuidado</div><div class="bem-detail">Equipamentos de enfermagem históricos</div></div></div>
+          <div class="bem"><span class="bem-emoji">👗</span><div class="bem-info"><div class="bem-name">Uniformes e insígnias</div><div class="bem-detail">Vestuário e símbolos das alunas da EEAN</div></div></div>
+          <div class="bem"><span class="bem-emoji">🍽</span><div class="bem-info"><div class="bem-name">Louças do internato</div><div class="bem-detail">Acervo cotidiano da vida escolar</div></div></div>
+        </div>
+      </div>
+      <div class="acesso-box">
+        <span class="acesso-icon">🕐</span>
+        <div class="acesso-text"><strong>Horário:</strong> Segunda a sexta 9h–17h · Entrada gratuita<br><strong>Agendamento:</strong> centro_documentacao@eean.ufrj.br · eean.ufrj.br</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ABEn -->
+  <div class="acervo-item" data-cat="assoc">
+    <div class="acervo-header" onclick="toggle(this.parentElement)">
+      <div class="acervo-icon">🏢</div>
+      <div class="acervo-meta">
+        <div class="acervo-tags">
+          <span class="tag tag-assoc">Associação</span>
+          <span class="tag tag-ano">ABEn 1926 · CEMEnf 2008</span>
+        </div>
+        <div class="acervo-name">ABEn — Centro de Memória da Enfermagem Brasileira + CasaABEn</div>
+        <div class="acervo-local">📍 Asa Norte, Brasília (DF) · abennacional.org.br</div>
+      </div>
+      <button class="acervo-toggle">▾</button>
+    </div>
+    <div class="acervo-body">
+      <div class="body-section">
+        <div class="body-label">O que é</div>
+        <div class="body-text">A <strong>ABEn</strong> foi fundada em 12 de agosto de 1926 no Rio de Janeiro como ANED. O <strong>CEMEnf</strong> foi implantado em 2008, por parceria ABEn–UFRJ/EEAN. Em 2025 foi lançada a <strong>CasaABEn</strong>, memorial virtual imersivo (HoloLens, computador ou celular) em parceria com Fiocruz Brasília e Unesc. A REBEn é publicada desde 1932 — o periódico de enfermagem mais antigo do Brasil.</div>
+      </div>
+      <div class="body-section">
+        <div class="body-label">Bens e peças do acervo</div>
+        <div class="bens-grid">
+          <div class="bem"><span class="bem-emoji">📜</span><div class="bem-info"><div class="bem-name">Documentos fundadores (1926)</div><div class="bem-detail">Atas de criação da ANED e estatutos originais</div></div></div>
+          <div class="bem"><span class="bem-emoji">📋</span><div class="bem-info"><div class="bem-name">Atas de congressos (desde 1947)</div><div class="bem-detail">75+ Congressos Brasileiros de Enfermagem</div></div></div>
+          <div class="bem"><span class="bem-emoji">📰</span><div class="bem-info"><div class="bem-name">REBEn — volumes desde 1932</div><div class="bem-detail">90+ anos do periódico mais antigo da área</div></div></div>
+          <div class="bem"><span class="bem-emoji">🖼</span><div class="bem-info"><div class="bem-name">Galeria das Presidentas</div><div class="bem-detail">Retratos e biografias de todas as presidentes</div></div></div>
+          <div class="bem"><span class="bem-emoji">🥇</span><div class="bem-info"><div class="bem-name">Emblema e medalhão histórico</div><div class="bem-detail">Símbolos institucionais da ABEn</div></div></div>
+          <div class="bem"><span class="bem-emoji">💻</span><div class="bem-info"><div class="bem-name">CasaABEn — memorial virtual</div><div class="bem-detail">Documentos, vídeos, áudios e depoimentos imersivos</div></div></div>
+        </div>
+      </div>
+      <div class="acesso-box">
+        <span class="acesso-icon">📞</span>
+        <div class="acesso-text"><strong>Contato:</strong> +55 (61) 3226-0653 · aben@abennacional.org.br<br><strong>Memorial virtual:</strong> abennacional.org.br/metaverso-casa-aben</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Fiocruz/COC -->
+  <div class="acervo-item" data-cat="arquivo">
+    <div class="acervo-header" onclick="toggle(this.parentElement)">
+      <div class="acervo-icon">🔬</div>
+      <div class="acervo-meta">
+        <div class="acervo-tags">
+          <span class="tag tag-arquivo">Arquivo histórico</span>
+          <span class="tag tag-ano">Fiocruz 1900 · COC 1985</span>
+        </div>
+        <div class="acervo-name">Casa de Oswaldo Cruz / Fiocruz — Arquivo e Museu da Saúde</div>
+        <div class="acervo-local">📍 Campus Manguinhos, Rio de Janeiro (RJ) · coc.fiocruz.br</div>
+      </div>
+      <button class="acervo-toggle">▾</button>
+    </div>
+    <div class="acervo-body">
+      <div class="body-section">
+        <div class="body-label">O que é</div>
+        <div class="body-text">A <strong>Fiocruz</strong> foi criada em 25 de maio de 1900 como Instituto Soroterápico Federal. A <strong>Casa de Oswaldo Cruz (COC)</strong> foi criada em 1985 como unidade de preservação da memória da saúde pública. O campus Manguinhos abriga prédios tombados como Patrimônio Cultural Brasileiro — arquitetura mouresca do início do séc. XX. É o maior repositório de história da saúde pública do país.</div>
+      </div>
+      <div class="body-section">
+        <div class="body-label">Bens relevantes para a história da enfermagem</div>
+        <div class="bens-grid">
+          <div class="bem"><span class="bem-emoji">📁</span><div class="bem-info"><div class="bem-name">Fundo Missão Parsons (1921–1930)</div><div class="bem-detail">Documentos da reestruturação da enfermagem brasileira</div></div></div>
+          <div class="bem"><span class="bem-emoji">📷</span><div class="bem-info"><div class="bem-name">Fotografias de campanhas sanitárias</div><div class="bem-detail">Vacinação, febre amarela, malária e peste</div></div></div>
+          <div class="bem"><span class="bem-emoji">🎬</span><div class="bem-info"><div class="bem-name">Filmes históricos do DNSP</div><div class="bem-detail">Campanhas do Departamento Nacional de Saúde Pública</div></div></div>
+          <div class="bem"><span class="bem-emoji">📜</span><div class="bem-info"><div class="bem-name">Correspondências de Carlos Chagas</div><div class="bem-detail">Criador da EEAN em 1923</div></div></div>
+          <div class="bem"><span class="bem-emoji">📋</span><div class="bem-info"><div class="bem-name">Relatórios do DNSP (1920–1940)</div><div class="bem-detail">Serviços de saúde com atuação de enfermeiras</div></div></div>
+          <div class="bem"><span class="bem-emoji">💊</span><div class="bem-info"><div class="bem-name">Instrumentos médico-sanitários</div><div class="bem-detail">Equipamentos de campanhas históricas de saúde pública</div></div></div>
+        </div>
+      </div>
+      <div class="acesso-box">
+        <span class="acesso-icon">🌐</span>
+        <div class="acesso-text"><strong>Arquivo da COC:</strong> pesquisa presencial e online<br>coc.fiocruz.br/arquivo · acervo.coc.fiocruz.br</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. COFEN -->
+  <div class="acervo-item" data-cat="assoc">
+    <div class="acervo-header" onclick="toggle(this.parentElement)">
+      <div class="acervo-icon">⚖️</div>
+      <div class="acervo-meta">
+        <div class="acervo-tags">
+          <span class="tag tag-assoc">Conselho Federal</span>
+          <span class="tag tag-ano">COFEN fundado em 1973</span>
+        </div>
+        <div class="acervo-name">COFEN — Centro de Documentação e Memória da Enfermagem</div>
+        <div class="acervo-local">📍 SHLS Quadra 716, Brasília (DF) · cofen.gov.br</div>
+      </div>
+      <button class="acervo-toggle">▾</button>
+    </div>
+    <div class="acervo-body">
+      <div class="body-section">
+        <div class="body-label">O que é</div>
+        <div class="body-text">O <strong>COFEN</strong> foi criado pela Lei 5.905, de 12 de julho de 1973. Seu <strong>Centro de Documentação e Memória</strong> preserva o acervo administrativo e histórico do sistema COFEN/CORENs desde a fundação, além de ser curador do MuNEAN em Salvador.</div>
+      </div>
+      <div class="body-section">
+        <div class="body-label">Bens e peças do acervo</div>
+        <div class="bens-grid">
+          <div class="bem"><span class="bem-emoji">📜</span><div class="bem-info"><div class="bem-name">Legislação histórica da profissão</div><div class="bem-detail">Decretos, leis e resoluções desde 1890</div></div></div>
+          <div class="bem"><span class="bem-emoji">📋</span><div class="bem-info"><div class="bem-name">Resoluções do COFEN (1973–atual)</div><div class="bem-detail">Normas que regulam o exercício profissional</div></div></div>
+          <div class="bem"><span class="bem-emoji">🗂</span><div class="bem-info"><div class="bem-name">Registros profissionais históricos</div><div class="bem-detail">Primeiros registros de enfermeiros no Brasil</div></div></div>
+          <div class="bem"><span class="bem-emoji">🎙</span><div class="bem-info"><div class="bem-name">Depoimentos de ex-conselheiros</div><div class="bem-detail">Memória oral do sistema de regulação</div></div></div>
+          <div class="bem"><span class="bem-emoji">📰</span><div class="bem-info"><div class="bem-name">Enfermagem em Foco (periódico)</div><div class="bem-detail">Revista do COFEN desde 2010</div></div></div>
+        </div>
+      </div>
+      <div class="acesso-box">
+        <span class="acesso-icon">📧</span>
+        <div class="acesso-text"><strong>Para pesquisa no acervo:</strong> documentacao@cofen.gov.br<br>cofen.gov.br</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. REBEn -->
+  <div class="acervo-item" data-cat="periodico">
+    <div class="acervo-header" onclick="toggle(this.parentElement)">
+      <div class="acervo-icon">📰</div>
+      <div class="acervo-meta">
+        <div class="acervo-tags">
+          <span class="tag tag-periodico">Periódico</span>
+          <span class="tag tag-ano">Publicada desde 1932</span>
+        </div>
+        <div class="acervo-name">REBEn — Revista Brasileira de Enfermagem</div>
+        <div class="acervo-local">📍 Órgão oficial da ABEn · scielo.br · reben.com.br</div>
+      </div>
+      <button class="acervo-toggle">▾</button>
+    </div>
+    <div class="acervo-body">
+      <div class="body-section">
+        <div class="body-label">O que é</div>
+        <div class="body-text">A <strong>REBEn</strong> é o periódico científico de enfermagem mais antigo do Brasil, publicado ininterruptamente desde 1932 pela ABEn. Seu acervo histórico de mais de 90 anos documenta a produção científica e os debates da enfermagem brasileira. Indexada no SciELO e na BVS/LILACS.</div>
+      </div>
+      <div class="body-section">
+        <div class="body-label">O que o acervo contém</div>
+        <div class="bens-grid">
+          <div class="bem"><span class="bem-emoji">📰</span><div class="bem-info"><div class="bem-name">Volumes desde 1932</div><div class="bem-detail">90+ anos de produção científica contínua</div></div></div>
+          <div class="bem"><span class="bem-emoji">📋</span><div class="bem-info"><div class="bem-name">Anais dos CBEn</div><div class="bem-detail">Congressos Brasileiros de Enfermagem desde 1947</div></div></div>
+          <div class="bem"><span class="bem-emoji">🔬</span><div class="bem-info"><div class="bem-name">Artigos históricos originais</div><div class="bem-detail">Debates sobre regulamentação, ensino e prática</div></div></div>
+          <div class="bem"><span class="bem-emoji">👤</span><div class="bem-info"><div class="bem-name">Perfis e histórias de vida</div><div class="bem-detail">Trajetórias de pioneiras publicadas ao longo das décadas</div></div></div>
+        </div>
+      </div>
+      <div class="acesso-box">
+        <span class="acesso-icon">🌐</span>
+        <div class="acesso-text"><strong>Acesso gratuito:</strong> reben.com.br · scielo.br · BVS/LILACS<br>Volumes físicos: bibliotecas das Escolas de Enfermagem e ABEn Nacional</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. HERE -->
+  <div class="acervo-item" data-cat="periodico digital">
+    <div class="acervo-header" onclick="toggle(this.parentElement)">
+      <div class="acervo-icon">📖</div>
+      <div class="acervo-meta">
+        <div class="acervo-tags">
+          <span class="tag tag-periodico">Periódico Especializado</span>
+          <span class="tag tag-ano">Publicada desde 2010</span>
+        </div>
+        <div class="acervo-name">HERE — História da Enfermagem: Revista Eletrônica</div>
+        <div class="acervo-local">📍 Órgão oficial da ABEn · periodicos.abennacional.org.br/here</div>
+      </div>
+      <button class="acervo-toggle">▾</button>
+    </div>
+    <div class="acervo-body">
+      <div class="body-section">
+        <div class="body-label">O que é</div>
+        <div class="body-text">A <strong>HERE</strong> é o único periódico brasileiro dedicado exclusivamente à história da enfermagem, publicado desde 2010 pela ABEn. Indexada na LILACS/BVS e no DOAJ. Publica artigos originais, documentos históricos comentados, biografias, relatos de pesquisa e reflexões metodológicas.</div>
+      </div>
+      <div class="body-section">
+        <div class="body-label">O que o acervo contém</div>
+        <div class="bens-grid">
+          <div class="bem"><span class="bem-emoji">📄</span><div class="bem-info"><div class="bem-name">Artigos de pesquisa histórica</div><div class="bem-detail">Volumes anuais desde 2010</div></div></div>
+          <div class="bem"><span class="bem-emoji">👤</span><div class="bem-info"><div class="bem-name">Biografias de personalidades</div><div class="bem-detail">Figuras da enfermagem ibero-americana</div></div></div>
+          <div class="bem"><span class="bem-emoji">📜</span><div class="bem-info"><div class="bem-name">Documentos históricos comentados</div><div class="bem-detail">Fontes primárias transcritas e analisadas</div></div></div>
+          <div class="bem"><span class="bem-emoji">🎙</span><div class="bem-info"><div class="bem-name">Registros de história oral</div><div class="bem-detail">Prontuários do Navio Hope (1973) e depoimentos</div></div></div>
+        </div>
+      </div>
+      <div class="acesso-box">
+        <span class="acesso-icon">🌐</span>
+        <div class="acesso-text"><strong>Acesso gratuito:</strong> periodicos.abennacional.org.br/here<br>Indexada BVS/LILACS e DOAJ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. BVS -->
+  <div class="acervo-item" data-cat="digital">
+    <div class="acervo-header" onclick="toggle(this.parentElement)">
+      <div class="acervo-icon">💻</div>
+      <div class="acervo-meta">
+        <div class="acervo-tags">
+          <span class="tag tag-digital">Repositório Digital</span>
+          <span class="tag tag-ano">BVS lançada em 1998</span>
+        </div>
+        <div class="acervo-name">BVS Enfermagem — BDENF / LILACS</div>
+        <div class="acervo-local">📍 bvsenfermeria.bvsalud.org · BIREME/OPAS/OMS</div>
+      </div>
+      <button class="acervo-toggle">▾</button>
+    </div>
+    <div class="acervo-body">
+      <div class="body-section">
+        <div class="body-label">O que é</div>
+        <div class="body-text">A <strong>BVS</strong> foi lançada em 1998 pela BIREME/OPAS/OMS. A <strong>BDENF</strong> é a base específica da enfermagem, cobrindo periódicos brasileiros e latino-americanos. Além da literatura científica, inclui fotografias, vídeos, biografias históricas e documentos da memória da profissão.</div>
+      </div>
+      <div class="body-section">
+        <div class="body-label">O que o acervo contém</div>
+        <div class="bens-grid">
+          <div class="bem"><span class="bem-emoji">📚</span><div class="bem-info"><div class="bem-name">Literatura científica indexada</div><div class="bem-detail">Artigos de enfermagem brasileira e latino-americana</div></div></div>
+          <div class="bem"><span class="bem-emoji">📷</span><div class="bem-info"><div class="bem-name">Fotografias históricas</div><div class="bem-detail">Acervo iconográfico da profissão</div></div></div>
+          <div class="bem"><span class="bem-emoji">🎬</span><div class="bem-info"><div class="bem-name">Vídeos institucionais</div><div class="bem-detail">Registros audiovisuais de eventos e práticas</div></div></div>
+          <div class="bem"><span class="bem-emoji">🎓</span><div class="bem-info"><div class="bem-name">Teses e dissertações</div><div class="bem-detail">Produção histórica dos programas de pós-graduação</div></div></div>
+        </div>
+      </div>
+      <div class="acesso-box">
+        <span class="acesso-icon">🌐</span>
+        <div class="acesso-text"><strong>Acesso gratuito e integral:</strong> bvsenfermeria.bvsalud.org<br>Seção específica: História da Enfermagem</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. Arquivo Nacional -->
+  <div class="acervo-item" data-cat="arquivo">
+    <div class="acervo-header" onclick="toggle(this.parentElement)">
+      <div class="acervo-icon">🏛</div>
+      <div class="acervo-meta">
+        <div class="acervo-tags">
+          <span class="tag tag-arquivo">Arquivo Nacional</span>
+          <span class="tag tag-ano">Fundado em 1838</span>
+        </div>
+        <div class="acervo-name">Arquivo Nacional / Hemeroteca Digital da Biblioteca Nacional</div>
+        <div class="acervo-local">📍 Rio de Janeiro (RJ) e Brasília (DF) · an.gov.br</div>
+      </div>
+      <button class="acervo-toggle">▾</button>
+    </div>
+    <div class="acervo-body">
+      <div class="body-section">
+        <div class="body-label">O que é</div>
+        <div class="body-text">O <strong>Arquivo Nacional</strong> foi criado em 1838 e é o principal repositório de documentos oficiais do Estado brasileiro. A <strong>Hemeroteca Digital da Biblioteca Nacional</strong> disponibiliza online jornais e revistas desde o século XIX, com coberturas de campanhas de vacinação, inaugurações de hospitais e figuras da enfermagem na imprensa geral.</div>
+      </div>
+      <div class="body-section">
+        <div class="body-label">Bens relevantes para a pesquisa</div>
+        <div class="bens-grid">
+          <div class="bem"><span class="bem-emoji">📜</span><div class="bem-info"><div class="bem-name">Decretos e leis originais</div><div class="bem-detail">Dec. 791/1890 (1ª escola), Lei 5.905/1973 (COFEN)</div></div></div>
+          <div class="bem"><span class="bem-emoji">📋</span><div class="bem-info"><div class="bem-name">Relatórios ministeriais históricos</div><div class="bem-detail">Ministério da Saúde e do Interior, sécs. XIX e XX</div></div></div>
+          <div class="bem"><span class="bem-emoji">🗞</span><div class="bem-info"><div class="bem-name">Jornais digitalizados</div><div class="bem-detail">Notícias sobre enfermagem desde o séc. XIX</div></div></div>
+          <div class="bem"><span class="bem-emoji">🗂</span><div class="bem-info"><div class="bem-name">Fundos de ministérios e autarquias</div><div class="bem-detail">Documentos do antigo DNSP e órgãos de saúde</div></div></div>
+        </div>
+      </div>
+      <div class="acesso-box">
+        <span class="acesso-icon">🌐</span>
+        <div class="acesso-text"><strong>Arquivo Nacional:</strong> an.gov.br · pesquisa presencial (RJ e DF)<br><strong>Hemeroteca Digital:</strong> hemerotecadigital.bn.gov.br — gratuito e integral</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p><strong>Acervos da História da Enfermagem Brasileira</strong><br>
+  Material produzido para seminário acadêmico · Referências: Padilha & Borenstein (2005); Oguisso & Campos (2013);<br>
+  Padilha et al. (2012, 2013, 2017); Vieira, Petry & Padilha (2019); Risi et al. (2017)</p>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  function toggle(item) {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.acervo-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  function filter(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.acervo-item').forEach(item => {
+      if (cat === 'todos') {
+        item.classList.remove('hidden');
+      } else {
+        const cats = (item.dataset.cat || '').split(' ');
+        item.classList.toggle('hidden', !cats.includes(cat));
+      }
+    });
+  }
+
+  window.addEventListener('scroll', () => {
+    document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300);
+  });
+</script>
+</body>
+</html>
